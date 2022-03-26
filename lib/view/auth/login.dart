@@ -150,7 +150,7 @@ class LoginScreen extends GetWidget<AuthViewModel> {
                       text: "Sign in with Google",
                       onPressed: () async {
                         // googleSignInMethod();
-                        controller.signInWithGoogle();
+                        controller.googleSignInMethod();
                       },
                     ),
                   ),

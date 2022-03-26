@@ -29,26 +29,14 @@ class ProfileScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(100)),
                           image: DecorationImage(
-                              image:
-                                  // controller.userModel.pic == null?
-                                  AssetImage('assets/images/Image.png')
-                              // : NetworkImage('${controller.userModel.pic}'
-                              // ),
-                              ),
+                            image: NetworkImage(
+                                'https://firebasestorage.googleapis.com/v0/b/e-commerce-9c780.appspot.com/o/Image2.png?alt=media&token=473a2072-c0d9-41d1-9dc9-ca1a75cc556e'),
+
+                            // NetworkImage(
+                            //     '${controller.googleAccount.value?.photoUrl ?? 'https://firebasestorage.googleapis.com/v0/b/e-commerce-9c780.appspot.com/o/Image2.png?alt=media&token=473a2072-c0d9-41d1-9dc9-ca1a75cc556e'}'),
+                          ),
                         ),
                       ),
-                      // const CircleAvatar(
-                      //   radius: 43,
-                      //   backgroundColor: Colors.white54,
-                      //   child: CircleAvatar(
-                      //     // backgroundColor: Colors.yellow,
-                      //     // backgroundImage: NetworkImage(
-                      //     //   userData.userImage ??
-                      //     //       "https://s3.envato.com/files/328957910/vegi_thumb.png",
-                      //     // ),
-                      //     radius: 40,
-                      //   ),
-                      // ),
                       const SizedBox(
                         width: 20,
                       ),
@@ -57,15 +45,16 @@ class ProfileScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CustomText(
-                            text:
-                                //  '${controller.name}',
-                                '${controller.userModel?.name == null ? 'null' : controller.userModel?.name}',
+                            text: '${controller.userModel?.name ?? 'empty'}',
+                            //  '${controller.name}',
+                            // '${controller.googleAccount.value?.displayName ?? 'name empty'}',
                             fontSize: 26,
                           ),
                           CustomText(
+                            text: '${controller.userModel?.email ?? 'empty'}',
+
                             // text: 'maabdel22@gmail.com',
-                            text:
-                                '${controller.userModel?.email == null ? 'null' : controller.userModel?.email}',
+                            // '${controller.googleAccount.value?.email ?? 'email.empty'}',
 
                             fontSize: 14,
                           ),

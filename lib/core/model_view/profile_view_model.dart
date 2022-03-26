@@ -25,16 +25,9 @@ class ProfileViewModel extends GetxController {
 
   void getCurrentUser() async {
     await localStorageData?.getUser.then((value) {
-      if (value == null) {
-        _userModel = UserModel(
-          userId: 'xxxx',
-          email: 'xxxxx',
-          name: 'xx@xx.xx',
-          pic: 'empity',
-        );
-      } else
-        _userModel = value;
-      print(value);
+      _userModel = value;
+      print(value.toJson());
     });
+    update();
   }
 }

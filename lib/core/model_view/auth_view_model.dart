@@ -10,19 +10,26 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../services/firestore_user.dart';
 
 class AuthViewModel extends GetxController {
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  // var googleAccount = Rx<GoogleSignInAccount?>(null);
   final FirebaseAuth _auth = FirebaseAuth.instance;
   // FacebookLogin _facebookLogin=FacebookLogin();
   String? email, password, name, pic;
-  final Rxn<User>? _user = Rxn<User>();
-  String? get user => _user?.value?.email;
+  final Rxn<User> _user = Rxn<User>();
+  String? get user => _user.value?.email;
 
   final LocalStorageData localStorageData = Get.find();
+
+  // login() async {
+  //   googleAccount.value = await _googleSignIn.signIn();
+  //   Get.offAll(ControlView());
+  // }
+
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    _user?.bindStream(_auth.authStateChanges());
+    _user.bindStream(_auth.authStateChanges());
     if (_auth.currentUser != null) {
       getCurrentUser(_auth.currentUser!.uid);
     }
@@ -40,56 +47,34 @@ class AuthViewModel extends GetxController {
     super.onClose();
   }
 
-  // void googleSignInMethod() async {
-  //   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-  //   print(googleUser);
-  //   GoogleSignInAuthentication googleSignInAuthentication =
-  //       await googleUser!.authentication;
+  void googleSignInMethod() async {
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    print(googleUser);
+    GoogleSignInAuthentication googleSignInAuthentication =
+        await googleUser!.authentication;
 
-  //   final AuthCredential credential = GoogleAuthProvider.credential(
-  //     idToken: googleSignInAuthentication.idToken,
-  //     accessToken: googleSignInAuthentication.accessToken,
-  //   );
-
-  //   await _auth.signInWithCredential(credential).then((user) {
-  //     saveUser(user);
-  //     Get.offAll(ControlView());
-  //   });
-  // }
-
-  void signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      idToken: googleSignInAuthentication.idToken,
+      accessToken: googleSignInAuthentication.accessToken,
     );
 
-    // Once signed in, return the UserCredential
-    await FirebaseAuth.instance.signInWithCredential(credential).then((user) {
+    await _auth.signInWithCredential(credential).then((user) {
       saveUser(user);
       Get.offAll(ControlView());
     });
   }
+  // void signInWithFacebook() async {
+  //   // Trigger the sign-in flow
+  //   final LoginResult loginResult = await FacebookAuth.instance.login();
 
-  void signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login();
+  //   // Create a credential from the access token
+  //   final OAuthCredential facebookAuthCredential =
+  //       FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential =
-        FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    // Once signed in, return the UserCredential
-    FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-    // saveUser(user);
-  }
+  //   // Once signed in, return the UserCredential
+  //   FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  //   // saveUser(user);
+  // }
 
   void signInWithEmailAndPassword() async {
     try {
@@ -98,9 +83,7 @@ class AuthViewModel extends GetxController {
           .then((value) async {
         getCurrentUser(value.user!.uid);
       });
-      ;
-      // showSnackBar(context, 'Login Successflly');
-      // Get.offAll(HomeScreen());
+
       Get.offAll(ControlView());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -138,10 +121,10 @@ class AuthViewModel extends GetxController {
       pic: pic == null ? user?.user?.photoURL : pic,
     ));
     setUser(UserModel(
-      userId: user?.user?.uid == null ? 'null' : user?.user?.uid,
-      email: user?.user?.email == null ? 'null' : user?.user?.email,
-      name: name == null ? 'null' : name,
-      pic: pic == null ? 'user?.user?.photoURL' : pic,
+      userId: user?.user?.uid ?? 'null',
+      email: user?.user?.email ?? 'null',
+      name: name ?? 'null',
+      pic: pic ?? 'user?.user?.photoURL',
     ));
   }
 
